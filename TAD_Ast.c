@@ -30,7 +30,7 @@ Tdata create_str(){
 	return nodo;
 }
 	
-
+//hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
 void carge_str_cad(Tdata* nodo, const char* texto){
 	(*nodo)->strData= load2(texto);
 }
