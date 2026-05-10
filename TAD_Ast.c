@@ -10,6 +10,7 @@ Tdata create_str_lis(str cadena){ //TOP SECRET uwu
 	return nodo;
 }
 
+
 /*-----------------------------------------------------------------------------------------*/
 
 // <<-- Sobre TD STR -->> //
@@ -85,15 +86,46 @@ Tdata create_set(){
 	nodo->next = NULL;
 	return nodo;
 }
+
 	
 void insert_set(Tdata* set, Tdata elem){
-	set_insertar(set, elem);
+	if(elem!=NULL){
+		
+		Tdata nuevo= create_set();
+		nuevo->data= clone(elem);
+		
+		if(*conjunto == NULL){
+			*conjunto= nuevo;
+		}
+		else{
+			if(belongs(*conjunto, elem)==0){
+				Tdata aux= *conjunto;
+				
+				while(aux->next!=NULL){
+					aux= aux->next;
+				}
+				aux->next= nuevo;
+			}
+			
+		}
+	}
+	return;
 }
 	
 
 int belongs(Tdata set, Tdata elem){
+	
 	if(set!=NULL){
-		return set_pertenece(set, elem);
+		Tdata aux= set;
+		while(aux!=NULL){
+			if(compara_generico(aux->data, elem)==0){
+				return 1;
+			}
+			else{
+				aux= aux->next;			
+			}
+		}
+		return 0;
 	}
 	else{
 		printf("\nError: El conjunto esta vacio");
@@ -103,41 +135,178 @@ int belongs(Tdata set, Tdata elem){
 }
 	
 void print_set(Tdata set){
-	set_mostrar(set);
+	if(set == NULL || set->data== NULL){
+		printf("{}");
+		return;
+	}
+	
+	printf("{ ");
+	
+	Tdata aux = conjunto;
+	
+	while(aux != NULL){
+		
+		if(aux->data != NULL){
+			mostrar_generico(aux->data);
+			
+			if(aux->next != NULL){
+				printf(", ");
+			}
+		}
+		aux = aux->next;
+	}
+	
+	printf(" }");
 }
 	
 
 void remove_set(Tdata* set, Tdata elem){
-	set_eliminar(set, elem);
+	
+	if(*set==NULL || elem==NULL){
+		return;
+	}
+	
+	Tdata actual = *set;
+	Tdata anterior = NULL;
+	
+	while(actual != NULL && compara_generico(actual->data, elem)!=0){
+		anterior = actual;
+		actual = actual->next;
+	}
+	
+	if(actual != NULL){
+		if(anterior == NULL){
+			*set = (*set)->next;
+		}else{
+			anterior->next = actual->next;
+		}
+		
+		actual->next=NULL; 
+		//pa que no me elimine todo jjsa
+		//total ya se hizo una copia profunda
+		//Falta hacer el set_compara...
+		
+		eliminar_generico(actual); //este ta dudoso ?)
+		printf("\nElemento eliminado con exito");
+		
+	}else{
+		printf("\nElemento no encontrado");
+	}
 }
 	
-
 
 // ** Operaciones algebraicas sobre dos conjuntos **
 	
 Tdata union_set(Tdata set1, Tdata set2){
-	return set_union(set1, set2);
+	
+	Tdata nuevo=  NULL;
+	nuevo= clone(set1);
+	
+	Tdata aux= set2;
+	
+	while(aux!=NULL){
+		insert_set(&nuevo, aux->data);
+		aux= aux->next;
+	}
+	return nuevo;
 }
 
 
 Tdata intersection_set(Tdata set1, Tdata set2){
-	return set_interseccion(set1, set2);
+	
+	Tdata nuevo= NULL;
+	Tdata aux= set1;
+	
+	while(aux!=NULL){
+		//el elemento de A, pertenece a B?
+		if(belongs(set2,aux->data)==1){
+			insert_set(&nuevo, aux->data);
+		}
+		aux = aux->next;
+	}
+	return nuevo;
 }
 
 
 Tdata difference_set(Tdata set1, Tdata set2){
-	return set_diferencia(set1, set2);
-}
+	
+	Tdata nuevo= NULL;
+	Tdata aux= set1;
+	
+	while(aux!=NULL){
+		//el elemento de A, pertenece a B?
+		if(belongs(set2,aux->data)==1){
+			set_insertar(&nuevo,aux->data);
+		}
+		aux = aux->next;
+	}
+	return nuevo;
 
 
 int subset(Tdata set1, Tdata set2){
-	return set_subconjunto(set1, set2);
+	
+	Tdata aux1= conjunto1;
+	
+	if (aux1 == NULL){
+		return 1;
+	}
+	
+	while(aux1 != NULL){
+		if(set_pertenece(set2,aux1->data)!=1){
+			return 0;
+		}
+		aux1 = aux1->next;
+	}
+	return 1;
 }
 	
 
 int equals_set(Tdata set1, Tdata set2){
-	return set_comparar(set1, set2);
+	
+	if(set1==NULL && set2==NULL){
+		return 0;
+	}
+	else{
+		if(set1==NULL || set2==NULL){
+			return 1;
+		}
+		else{
+			if(subset(set1, set2)==0 && subset(set2, set1)==0){
+				return 0;
+			}
+		}
+		return 1;
+	}
+	
 }
+	
+	
+Tdata copy_set(Tdata set){
+	
+	Tdata aux = n;
+	Tdata head = NULL;
+	Tdata tail = NULL;
+	
+	while(aux != NULL){
+		Tdata nodo_nuevo = create_set();  // nodo contenedor
+		
+		nodo_nuevo->data = clone(aux->data);
+		nodo_nuevo->next = NULL;
+		
+		if(head == NULL){
+			head = nodo_nuevo;
+			tail = nodo_nuevo;
+		} else {
+			tail->next = nodo_nuevo;
+			tail = nodo_nuevo;
+		}
+		
+		aux = aux->next;
+	}
+	
+	return head;
+}
+
 
 
 Tdata product_cartesiano(Tdata set1, Tdata set2){
@@ -147,6 +316,7 @@ Tdata product_cartesiano(Tdata set1, Tdata set2){
 
 
 // <<-- Sobre TD LIST -->> //
+
 Tdata create_list(){
 	Tdata nodo = (Tdata)malloc(sizeof( dataType));
 	nodo->nodeType = LIST;
