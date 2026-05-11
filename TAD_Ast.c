@@ -31,7 +31,7 @@ Tdata create_str(){
 	return nodo;
 }
 	
-//hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
+
 void carge_str_cad(Tdata* nodo, const char* texto){
 	(*nodo)->strData= load2(texto);
 }
@@ -184,9 +184,8 @@ void remove_set(Tdata* set, Tdata elem){
 		actual->next=NULL; 
 		//pa que no me elimine todo jjsa
 		//total ya se hizo una copia profunda
-		//Falta hacer el set_compara...
 		
-		eliminar_generico(actual); //este ta dudoso ?)
+		eliminar_generico(actual); 
 		printf("\nElemento eliminado con exito");
 		
 	}else{
