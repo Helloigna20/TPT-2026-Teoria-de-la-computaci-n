@@ -11,13 +11,13 @@ int main(){
 	print_set(A);
 	printf("\n");
 	
-	Tdata s1= create_str_cad("perro");
-	Tdata s2= create_str_cad("gato");
+	Tdata s1= create_str_cad("douma");
+	Tdata s2= create_str_cad("muzan");
 	Tdata s3= create_str();
 	//print_str(s3); printf("\n");
-	carge_str_cad(&s3, "garfield");
+	carge_str_cad(&s3, "akaza");
 	Tdata s4= concat_str(s2, s3);
-	Tdata s5= create_str_cad("perro");
+	Tdata s5= create_str_cad("nefire");
 	
 	insert_set(&A, s1);
 	insert_set(&A, s2);
@@ -69,11 +69,15 @@ int main(){
 	Tdata INTERSECCION2 = intersection_set(A, C);
 	printf("\n\nInterseccion (A n C)= ");
 	mostrar_generico(INTERSECCION2);
+	printf("\n");
+	remove_set(&UNION1, s1);
+	print_set(UNION1);
+	printf("\n");
+	print_set(A);
+	printf("\n");
+	eliminar_generico(&UNION1);
+	print_set(UNION1);
 	
-	
-	
-	
-
 	
 	return 0;
 }

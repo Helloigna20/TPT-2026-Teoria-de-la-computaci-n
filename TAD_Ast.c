@@ -1,15 +1,28 @@
 #include "TAD_Ast.h"
 
-void eliminar_generico(Tdata);
 Tdata copy_set(Tdata);
-int compare_list(Tdata, Tdata);
 
 Tdata create_str_lis(str cadena){ 
-	
 	Tdata nodo= (Tdata)malloc(sizeof(dataType));
 	nodo->nodeType= STR;
 	nodo->strData= cadena;
 	return nodo;
+}
+
+void eliminar(Tdata *nodo){
+	Tdata aux= *nodo;
+	Tdata ant;
+	
+	while(aux!=NULL){
+		if(aux->data!=NULL){
+			eliminar_generico(&(aux->data));
+		}
+		ant= aux;
+		aux= aux->next;
+		free(ant);
+	}
+	
+	*nodo=NULL;
 }
 
 /*-----------------------------------------------------------------------------------------*/
@@ -185,11 +198,12 @@ void remove_set(Tdata* set, Tdata elem){
 		//pa que no me elimine todo jjsa
 		//total ya se hizo una copia profunda
 		
-		eliminar_generico(actual); 
-		printf("\nElemento eliminado con exito");
+		eliminar_generico(&actual); 
+		printf("\n*** Elemento eliminado con exito ***\n");
 		
 	}else{
-		printf("\nElemento no encontrado");
+		printf("\n*** Elemento no encontrado *** 
+			   \n");
 	}
 }
 	
@@ -518,26 +532,27 @@ void mostrar_generico(Tdata nodo){
 	}
 }	
 	
-void eliminar_generico(Tdata nodo){
+void eliminar_generico(Tdata* nodo){
 	
-	if(nodo==NULL){
+	if(*nodo==NULL){
 		return;
 	}
-	switch(nodo->nodeType){
+	switch((*nodo)->nodeType){
 	case STR:
-		cadena_destruir(&(nodo->strData));
+		cadena_destruir(&((*nodo)->strData));
+		free(nodo);
 		break;
 		
 	case SET:
+		eliminar(nodo);
 		break;
 		
 	case LIST:
-		
+		eliminar(nodo);
 		break;
 	}
+	*nodo= NULL;
 	
-	free(nodo);
-	nodo=NULL;
-
 }
+
 

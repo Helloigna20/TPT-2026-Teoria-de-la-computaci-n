@@ -24,6 +24,7 @@ Tdata create_list();
 int compara_generico(Tdata, Tdata);
 Tdata clone(Tdata);
 void mostrar_generico(Tdata);
+void eliminar_generico(Tdata*);
 
 
 /* << Operaciones sobre STR >> */

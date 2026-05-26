@@ -80,7 +80,7 @@ void cadena_eliminar_vocales(str* cad){
 		}
 	}
 	else{
-		printf("\nError, la cadena esta vacia...");
+		printf("\nError: la cadena esta vacia...");
 	}
 
 }
@@ -93,19 +93,18 @@ void cadena_imprimir(str cad){
 		}
 	}
 	else{
-		printf("\nError, la cadena esta vacia...");
+		printf("\n*** Error: la cadena esta vacia... ***\n");
 	}
 }
 void cadena_destruir(str *cad){
 	
 	if(*cad==NULL){
-		printf("*** La cadena no tiene elementos para destruir***\n");
+		printf("\n*** La cadena no tiene elementos para destruir ***\n");
 	}
 	else{
 		while(*cad!=NULL){
 			*cad= (*cad)->sig;
 		}
-		printf("\n*** Cadena destruida ***");
 	}
 }
 	
@@ -142,7 +141,7 @@ str cadena_concatenar(str cad1, str cad2){
 	
 	if(cad1==NULL || cad2==NULL){
 		if(cad1==NULL && cad2==NULL){
-			printf("\nError, las cadenaas estan vacias...");
+			printf("\n*** Error: las cadenas estan vacias... ***\n");
 		}
 		else{
 			if(cad1==NULL){
