@@ -1,12 +1,9 @@
 #ifndef AST_H
 #define AST_H
-#include "TAD_String.h"
-
+#include "TAD_STR.h"
 #define STR 1
 #define SET 2
 #define LIST 3
-
-//Los comentarios son para guiarme porque sino me pierdo >_<
 
 /* <<< Estructura BASE OBLIGATORIA  >>>*/
 typedef struct dataType{
@@ -41,17 +38,17 @@ void print_str(Tdata);
 
 Tdata create_set();
 void insert_set(Tdata*, Tdata);
-int belongs(Tdata set, Tdata elem);
-void remove_set(Tdata* set, Tdata elem);
+int belongs(Tdata, Tdata);
+void remove_set(Tdata*, Tdata);
 void print_set(Tdata);
 Tdata product_cartesiano(Tdata, Tdata);
 	
 // ** Operaciones algebraicas sobre dos conjuntos **
-Tdata union_set(Tdata A, Tdata B); 
-Tdata intersection_set(Tdata A, Tdata B);
-Tdata difference_set(Tdata A, Tdata B); 
-int subset(Tdata A, Tdata B); 
-int equals_set(Tdata A, Tdata B);
+Tdata union_set(Tdata, Tdata); 
+Tdata intersection_set(Tdata, Tdata);
+Tdata difference_set(Tdata, Tdata); 
+int subset(Tdata, Tdata); 
+int equals_set(Tdata, Tdata);
 
 /* << Operaciones sobre LIST >> */
 void append(Tdata*, Tdata);

@@ -1,15 +1,16 @@
 #include "TAD_Ast.h"
-#include "TAD_Set.h"
-#include "TAD_List.h"
 
-Tdata create_str_lis(str cadena){ //TOP SECRET uwu
+void eliminar_generico(Tdata);
+Tdata copy_set(Tdata);
+int compare_list(Tdata, Tdata);
+
+Tdata create_str_lis(str cadena){ 
 	
 	Tdata nodo= (Tdata)malloc(sizeof(dataType));
 	nodo->nodeType= STR;
 	nodo->strData= cadena;
 	return nodo;
 }
-
 
 /*-----------------------------------------------------------------------------------------*/
 
@@ -40,7 +41,7 @@ void carge_str_cad(Tdata* nodo, const char* texto){
 int compare_str(Tdata nodo1, Tdata nodo2){
 	
 	if(nodo1->nodeType != STR || nodo2->nodeType!= STR){
-		return -2;
+		return -1000;
 	}else{
 		return cadena_comparar(nodo1->strData, nodo2->strData);
 	}
@@ -94,12 +95,12 @@ void insert_set(Tdata* set, Tdata elem){
 		Tdata nuevo= create_set();
 		nuevo->data= clone(elem);
 		
-		if(*conjunto == NULL){
-			*conjunto= nuevo;
+		if(*set == NULL){
+			*set=nuevo;
 		}
 		else{
-			if(belongs(*conjunto, elem)==0){
-				Tdata aux= *conjunto;
+			if(belongs(*set, elem)==0){
+				Tdata aux= *set;
 				
 				while(aux->next!=NULL){
 					aux= aux->next;
@@ -128,21 +129,20 @@ int belongs(Tdata set, Tdata elem){
 		return 0;
 	}
 	else{
-		printf("\nError: El conjunto esta vacio");
-		return -2;
+		return -1000;
 	}
 	
 }
 	
 void print_set(Tdata set){
-	if(set == NULL || set->data== NULL){
+	if(set == NULL || set->data == NULL){
 		printf("{}");
 		return;
 	}
 	
 	printf("{ ");
 	
-	Tdata aux = conjunto;
+	Tdata aux = set;
 	
 	while(aux != NULL){
 		
@@ -233,31 +233,32 @@ Tdata difference_set(Tdata set1, Tdata set2){
 	Tdata aux= set1;
 	
 	while(aux!=NULL){
-		//el elemento de A, pertenece a B?
-		if(belongs(set2,aux->data)==1){
-			set_insertar(&nuevo,aux->data);
+		//el elemento de A no pertenece a B?
+		if(belongs(set2,aux->data)!=1){
+			insert_set(&nuevo,aux->data);
 		}
 		aux = aux->next;
 	}
 	return nuevo;
-
+}
 
 int subset(Tdata set1, Tdata set2){
 	
-	Tdata aux1= conjunto1;
+	Tdata aux1= set1;
 	
 	if (aux1 == NULL){
 		return 1;
 	}
 	
 	while(aux1 != NULL){
-		if(set_pertenece(set2,aux1->data)!=1){
+		if(belongs(set2,aux1->data)!=1){
 			return 0;
 		}
 		aux1 = aux1->next;
 	}
 	return 1;
 }
+
 	
 
 int equals_set(Tdata set1, Tdata set2){
@@ -282,7 +283,7 @@ int equals_set(Tdata set1, Tdata set2){
 	
 Tdata copy_set(Tdata set){
 	
-	Tdata aux = n;
+	Tdata aux = set;
 	Tdata head = NULL;
 	Tdata tail = NULL;
 	
@@ -325,27 +326,107 @@ Tdata create_list(){
 }
 
 void append(Tdata* list, Tdata elem){
-	append(list, elem);
+	
+	if(elem!=NULL){
+		Tdata nuevo= create_list();
+		nuevo->data= clone(elem);
+		
+		if(*list==NULL){
+			*list=nuevo;
+		}
+		else{
+			Tdata aux= *list;
+			
+			while(aux->next!=NULL){
+				aux= aux->next;
+			}
+			aux->next= nuevo;
+		}
+	}
+	return;
 }
 	
 int length(Tdata list){
-	return list_tam(list);
+	Tdata aux= list;
+	int c=0;
+	
+	while(aux!=NULL){
+		c++;
+		aux= aux->next;
+	}
+	return c;
 }
+
 	
 Tdata copy_list(Tdata list){
-	list_copy(list);
+	Tdata aux = list;
+	Tdata head = NULL;
+	Tdata tail = NULL;
+	
+	while(aux != NULL){
+		Tdata nodo_nuevo = create_list();
+		
+		nodo_nuevo->data = clone(aux->data);
+		nodo_nuevo->next = NULL;
+		
+		if(head == NULL){
+			head = nodo_nuevo;
+			tail = nodo_nuevo;
+		} else {
+			tail->next = nodo_nuevo;
+			tail = nodo_nuevo;
+		}
+		
+		aux = aux->next;
+	}
+	return head;
 }
+
 	
 Tdata concat(Tdata list1, Tdata list2){
+	
+	
+}
+
+int compare_list(Tdata list1, Tdata list2){
 	
 }
 	
 int search(Tdata list, Tdata elem){
-	return list_pertenece(list, elem);
+	while(list!=NULL){
+		if(compara_generico(list->data, elem)==0){
+			return 1;
+		}
+		else{
+			list= list->next;			
+		}
+	}
+	return 0;
 }
 
 void print_list(Tdata list){
-	lista_mostrar(list);
+	if(list == NULL || list->data== NULL){
+		printf("[]");
+		return;
+	}
+	
+	printf("[ ");
+	
+	Tdata aux = list;
+	
+	while(aux != NULL){
+		
+		if(aux->data != NULL){
+			mostrar_generico(aux->data);
+			
+			if(aux->next != NULL){
+				printf(", ");
+			}
+		}
+		aux = aux->next;
+	}
+	
+	printf(" ]");
 }
 	
 
@@ -367,13 +448,11 @@ Tdata clone(Tdata nodo){
 		break;
 	}	
 	case SET:
-		nuevo= set_copy(nodo);
-		//ya es avaricia >_< FFF
+		nuevo= copy_set(nodo);
 		break;
 		
 	case LIST:
 		nuevo= copy_list(nodo);
-		//este tambien FFFefe
 		break;
 	}
 	return nuevo;
@@ -392,7 +471,7 @@ int compara_generico(Tdata nodo1, Tdata nodo2){
 		}
 		else{
 			if(nodo1->nodeType != nodo2->nodeType){
-				return -2;
+				return -1000;
 			}
 			switch(nodo1->nodeType){
 			case STR:
@@ -400,11 +479,11 @@ int compara_generico(Tdata nodo1, Tdata nodo2){
 				break;
 				
 			case SET:
-				op= set_comparar(nodo1, nodo2);
+				op= equals_set(nodo1, nodo2);
 				break;
 				
 			case LIST:
-				//no llegamos F
+				op= compare_list(nodo1, nodo2);
 				break;
 			}
 		}

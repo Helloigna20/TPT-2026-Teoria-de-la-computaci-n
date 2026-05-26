@@ -1,5 +1,4 @@
-
-#include "TAD_String.h"
+#include "TAD_STR.h"
 
 str crea_nodo(char c){
 	str nuevo;

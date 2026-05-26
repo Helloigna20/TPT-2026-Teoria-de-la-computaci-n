@@ -1,6 +1,5 @@
 #include "TAD_Ast.h"
 
-//Profe: le faltan 34983921 de cosas y creo que no funciona para todo pero es lo que tenemos ...
 
 int main(){
 	
