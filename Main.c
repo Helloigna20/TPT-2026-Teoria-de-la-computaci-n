@@ -2,7 +2,6 @@
 
 
 int main(){
-	
 	//CONJUNTO VACIO Y REPETIDOS
 	
 	Tdata A= NULL;
