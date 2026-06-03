@@ -103,32 +103,55 @@ Es decir, la funcion **δ** va a actuar como un buscador secuencial.
 
 
 
-### Propuesta 2: δ 
+### Propuesta 2: δ Indexado por Estado
 
 #### ¿Cual es la idea de la estructura?
+Esta estructura representa al automata conmo un grafo que utiliza una lista de adyacencia. Trata de descentralizar la informacion y darsela a cada estado. Es decir, que en lugar de que el automata tenga una funcion **δ** gigante y centralizada, la funcion de transicion sera fragmentada y metida adentro de cada estado. Los estados pasan a guardar todas las flechas (aristas del grafo) que salen de el (en este caso, hacia donde deben ir), su nombre y su tipo (si es final o no). 
 
-##### Estado y simbolo
-```C
+Por lo tanto, el automata ya no sabe como estan conectados los estados (de manera general), solo conoce la lista de estados existentes en donde cada uno de esos estados tiene almacenada la informacion de hacia donde debe ir. 
 
-```
 ##### Transicion
 ```C
+typedef struct transition{
+    Symbol symbol;                //Simbolo que se va leer.
 
+    Tdata to;                     //SET de estados destino.
+
+    struct transition* next;      //Puntero a la siguiente transicion de este estado.
+} Transition;
 ```
-##### Nodo de Transicion
+##### Estado
 ```C
+typedef struct stateNode{
+    State name;                   //Nombre del estado. 
 
+    Transition* transitions;      //La lista enlazada de sus propias transiciones.
+
+    int isFinal;                  //El tipo de estado que es (final(1) o no(0))
+
+    struct stateNode* next;       //Puntero al siguiente estado general del automata
+} StateNode;
 ```
 ##### Automata
 ```C
+typedef struct{
+    StateNode* states;            //Puntero al nodo inicial de  de la lista que contiene a todos los estados.
 
+    State q0;                     //Estado inicial
+
+    int deterministic;            //De que tipo es AFND o AFD (0 o 1)
+} Automata;
 ```
+
 #### ¿Como funciona delta?
 
-##### La funcion δ:
-```C
+Para procesar una cadena: 
 
-```
+Sea el estado actual **"q0"** y el simbolo *b*:
+
+1. Buscar el estado actual: se recorre la lista general de estados (A->states) hasta encontrar el estado cuyo nombre sea **"q0"**. 
+2. Acceder directamente a su lista de transiciones: una vez parado en **"q0"**, debemos acceder a su lista interna y recorrerla hasta encontrar el nodo cuyo ***symbol*** sea *b*.
+3. Obtener conjunto destino: devolvemos el destino *to*. 
 
 
 #### ¿Cuales son las ventajas de utilizar esta estructura?
@@ -137,7 +160,7 @@ Es decir, la funcion **δ** va a actuar como un buscador secuencial.
 #### ¿Y las desventajas?
 
 
-### Propuesta 2: δ 
+### Propuesta 3: δ 
 
 #### ¿Cual es la idea de la estructura?
 
