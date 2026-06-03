@@ -27,7 +27,7 @@ utilizando la definicion formal de un Automata Finito:
 Vamos a realizar un analisis de cada una de las estructuras propuestas por la catedra *"Teoria de la Computacion 1"*  basandonos en los siguientes enfoques:
 1. Idea de la estructura.
 2. Funcionamiento de **δ**
-3. Ventajas y desventajas de utilizad la estructura propuesta.
+3. Ventajas y desventajas de utilizar la estructura propuesta.
    
 ## Analisis de las Propuestas 
 
@@ -143,7 +143,7 @@ typedef struct{
 } Automata;
 ```
 
-#### ¿Como funciona delta?
+#### ¿Como funciona?
 
 Para procesar una cadena: 
 
@@ -160,31 +160,47 @@ Sea el estado actual **"q0"** y el simbolo *b*:
 #### ¿Y las desventajas?
 
 
-### Propuesta 3: δ 
+### Propuesta 3: δ como Matriz Dispersa
 
 #### ¿Cual es la idea de la estructura?
+En la teoria, a un automata se lo puede simular como una tabla de transiciones en donde se tienen filas (estados) y columnas (simbolos). Por ejemplo, si cruzo a la fila **"q0"** con la columna *a*, la celda resultante te dice hacia donde se debe ir (estado destino). Pero, ¿que pasa si el automata tiene muchos estados y un alfabeto grande, y encima hay pocas transiciones entre los estados? En este caso, pasariamos a tener una matriz gigante llena de espacios vacios. Pera evitar eso, esta estructura propone guardar solo las celdas que tienen datos, usando "coordenadas numericas enteras en lugar de nombres *strings*. 
 
-##### Estado y simbolo
+La idea de esta propuesta es que a cada estado y a cada simbolo se le asigne un id entero (indice), creando asi un sistema de coordenadas. Para eso se propone ademas usar un puntero simple: **TransitionEntry * delta**, es decir, un arreglo dinamico que va a contener las coordenas de las transiciones que si existen. 
+
+##### Entrada de transicion
+Esta parte serian las coordenas de mi transicion: (fila 0, columna 0) -> destinos.
 ```C
+typedef struct{
+    int from;        //Id numerico del estado origen. Ejemplo: si tengo "q0" pasaria a ser 0
 
-```
-##### Transicion
-```C
+    int symbol;      //Id numerico del simbolo. Ejemplo: si tengo "a" pasaria a ser 0
 
-```
-##### Nodo de Transicion
-```C
-
+    Tdata to;        //SET de estados destinos
+} TransitionEntry;
 ```
 ##### Automata
 ```C
+typedef struct{
+    Tdata Q;
 
+    Tdata Sigma;
+
+    TransitionEntry* delta;     //Arreglo dinamico de coordenadas
+
+    int deltaSize;              //Cantidad de transiciones 
+
+    int q0;                     //Id del estado inicial
+
+    Tdata F;                    //SET de estados finales.
+} Automata;
 ```
+
 #### ¿Como funciona delta?
 
-##### La funcion δ:
-```C
 
+##### Acceso a δ: 
+```C
+Delta(estado, simbolo)
 ```
 
 
@@ -196,31 +212,41 @@ Sea el estado actual **"q0"** y el simbolo *b*:
 
 
 
-### Propuesta 2: δ 
+### Propuesta 4: δ Funcional
 
 #### ¿Cual es la idea de la estructura?
 
-##### Estado y simbolo
+##### Entrada Funcional
 ```C
+typedef struct{
+    State from;
 
-```
-##### Transicion
-```C
+    Symbol symbol;
 
-```
-##### Nodo de Transicion
-```C
-
+    Tdata destinations;
+} DeltaEntry;
 ```
 ##### Automata
 ```C
+typedef struct{
+    Tdata Q;
 
+    Tdata Sigma;
+
+    DeltaEntry* delta;
+
+    int deltaCount;
+
+    State q0;
+
+    Tdata F;
+} Automata;
 ```
 #### ¿Como funciona delta?
 
 ##### La funcion δ:
 ```C
-
+buscar (estado, simbolo)
 ```
 
 
@@ -232,31 +258,45 @@ Sea el estado actual **"q0"** y el simbolo *b*:
 
 
 
-### Propuesta 2: δ 
+### Propuesta 5: Estados Compuestos para Determinacion
 
 #### ¿Cual es la idea de la estructura?
 
-##### Estado y simbolo
+##### Estado Compuesto
 ```C
-
+typedef struct{
+    Tdata subset;
+} CompositeState;
 ```
-##### Transicion
+##### Transicion determinizada
 ```C
+typedef struct{
+    CompositeState from;
 
+    Symbol symbol;
+
+    CompositeState to;
+} DFA_Transition;
 ```
-##### Nodo de Transicion
+##### AFD resultante
 ```C
+typedef struct{
+    Tdata states;
 
-```
-##### Automata
-```C
+    DFA_Transition* delta;
 
+    int deltaCount;
+
+    CompositeState q0;
+
+    Tdata F;
+} DFA;
 ```
 #### ¿Como funciona delta?
 
 ##### La funcion δ:
 ```C
-
+nuevo_estado = unión de destinos posibles
 ```
 
 
