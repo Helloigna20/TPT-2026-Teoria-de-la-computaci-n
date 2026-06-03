@@ -25,10 +25,10 @@ utilizando la definicion formal de un Automata Finito:
   * **F:** es un conjunto finito, no vacio, de estados de aceptacion.
 
 Vamos a realizar un analisis de cada una de las estructuras propuestas por la catedra *"Teoria de la Computacion 1"*  basandonos en los siguientes enfoques:
-  1. <ins>Manejo de memoria</ins>: cual de ellos es menos propenso a generar una fuga de memoria a la hora de crear las transiciones. 
-  2. <ins>Flexibilidad</ins>: cual sera el mas optimo para operar tanto AFND como AFD.
-  3. <ins>Integracion</ins>: cual de ellos es mas conveniente de usar teniendo en cuenta el codigo que se posee.
-
+1. Idea de la estructura.
+2. Funcionamiento de **δ**
+3. Ventajas y desventajas de utilizad la estructura propuesta.
+   
 ## Analisis de las Propuestas 
 
 ### Propuesta 1: δ como Lista de Transiciones
@@ -36,16 +36,211 @@ Vamos a realizar un analisis de cada una de las estructuras propuestas por la ca
 #### ¿Cual es la idea de la estructura?
 Esta estructura propone que las transiciones del automata tenga su propia lista enlazada. Es decir, representa a la funcion de transicion **δ** como una cadena secuencial de reglas, en donde agarra cada transicion (si fuera un grafico, seria cada arista) y la guarda de manera individual en un nodo que contiene un campo que almacena  el dato de la transicion, y  otro que almacena el puntero next que dirige hacia el siguiente nodo. 
 
+##### Estado y simbolo
 ```C
-//La transicion 
+typedef str State;
+typedef str Symbol;
+```
+##### Transicion
+```C
 typedef struct{
-    State from;  //Estado de origen, donde comieza. Ejemplo: "q0"
-    Symbol symbol;  //Es el simbolo leido. 
+    State from;
+    Symbol symbol;
 
-    Tdata to; //Es un 
+    Tdata to; // SET de estados destino
 } Transition;
 ```
+##### Nodo de Transicion
+```C
+typedef struct transitionNode{
+    Transition t;
+    struct transitionNode* next;
+} TransitionNode;
+```
+##### Automata
+```C
+typedef struct{
+    Tdata Q;
+    Tdata Sigma;
 
+    TransitionNode* Delta;
+
+    State q0;
+
+    Tdata F;
+
+    int deterministic;
+} Automata;
+```
+#### ¿Como funciona delta?
+
+##### La funcion δ:
+```C
+Tdata delta(Automata* A, State q, Symbol a);
+```
+El algoritmo hace lo siguiente:
+1. Se para en el primer elemento de la lista (A->Delta).
+
+2. Mira el campo ***from*** y ***symbol***, y pregunta:
+
+```C
+from == q
+symbol == a
+```
+
+3. Si la respuesta es NO, usa el puntero next para pasar al siguiente nodo y vuelve a preguntar.
+
+4. Si la respuesta es SÍ, detiene la búsqueda y devuelve el **Tdata** *to*. 
+
+5. Si llega al final de la lista (**next == NULL**) y no encontró nada, significa que no existe una transicion entre **"q"** y *a*. Puede devolver un conjunto vacio.
+
+Es decir, la funcion **δ** va a actuar como un buscador secuencial. 
+
+#### ¿Cuales son las ventajas de utilizar esta estructura?
+
+
+#### ¿Y las desventajas?
+
+
+
+### Propuesta 2: δ 
+
+#### ¿Cual es la idea de la estructura?
+
+##### Estado y simbolo
+```C
+
+```
+##### Transicion
+```C
+
+```
+##### Nodo de Transicion
+```C
+
+```
+##### Automata
+```C
+
+```
+#### ¿Como funciona delta?
+
+##### La funcion δ:
+```C
+
+```
+
+
+#### ¿Cuales son las ventajas de utilizar esta estructura?
+
+
+#### ¿Y las desventajas?
+
+
+### Propuesta 2: δ 
+
+#### ¿Cual es la idea de la estructura?
+
+##### Estado y simbolo
+```C
+
+```
+##### Transicion
+```C
+
+```
+##### Nodo de Transicion
+```C
+
+```
+##### Automata
+```C
+
+```
+#### ¿Como funciona delta?
+
+##### La funcion δ:
+```C
+
+```
+
+
+#### ¿Cuales son las ventajas de utilizar esta estructura?
+
+
+#### ¿Y las desventajas?
+
+
+
+
+### Propuesta 2: δ 
+
+#### ¿Cual es la idea de la estructura?
+
+##### Estado y simbolo
+```C
+
+```
+##### Transicion
+```C
+
+```
+##### Nodo de Transicion
+```C
+
+```
+##### Automata
+```C
+
+```
+#### ¿Como funciona delta?
+
+##### La funcion δ:
+```C
+
+```
+
+
+#### ¿Cuales son las ventajas de utilizar esta estructura?
+
+
+#### ¿Y las desventajas?
+
+
+
+
+### Propuesta 2: δ 
+
+#### ¿Cual es la idea de la estructura?
+
+##### Estado y simbolo
+```C
+
+```
+##### Transicion
+```C
+
+```
+##### Nodo de Transicion
+```C
+
+```
+##### Automata
+```C
+
+```
+#### ¿Como funciona delta?
+
+##### La funcion δ:
+```C
+
+```
+
+
+#### ¿Cuales son las ventajas de utilizar esta estructura?
+
+
+#### ¿Y las desventajas?
 
 
 
