@@ -196,25 +196,32 @@ typedef struct{
 ```
 
 #### ¿Como funciona delta?
-
+Llamamos a **Delta** pasandole el automata, el estado y el simbolo como parametros. Luego dentro de este metodo se va a recorrer el arreglo dinamico *delta* para ver si hay coincidencias (*delta* va a tener que traducir el estado y simbolo recibido a un **int**). 
+Para acceder a los campos de *delta* lo hacemos normalmente como cuando trabajabamos con arrays estaticos. Ejemplo: **delta[id].from** (Dependiendo del contexto). 
 
 ##### Acceso a δ: 
 ```C
-Delta(estado, simbolo)
+Delta(A, estado, simbolo);
 ```
+
+1. Treducir el estado y simbolo original a un id entero (esto formaria una coordenada).
+2. Recorrer *delta*, buscando el **TransitionEntry** que tenga **from== id_estado** y **symbol== id_simbolo**.
+3. Retorna *to* si es que lo encontro. 
 
 
 #### ¿Cuales son las ventajas de utilizar esta estructura?
-
+...
 
 #### ¿Y las desventajas?
-
-
-
+...
 
 ### Propuesta 4: δ Funcional
 
+/*Se va a utilizar esta estructura, es la que mejor se adapta al codigo que se tiene*/
+/*
+
 #### ¿Cual es la idea de la estructura?
+Esta estructura representa a la funcion de transicion δ utilizando un "diccionario" implementado como una arreglo dinamico. 
 
 ##### Entrada Funcional
 ```C
@@ -252,10 +259,8 @@ buscar (estado, simbolo)
 
 #### ¿Cuales son las ventajas de utilizar esta estructura?
 
-
 #### ¿Y las desventajas?
-
-
+...
 
 
 ### Propuesta 5: Estados Compuestos para Determinacion
@@ -301,9 +306,9 @@ nuevo_estado = unión de destinos posibles
 
 
 #### ¿Cuales son las ventajas de utilizar esta estructura?
-
+...
 
 #### ¿Y las desventajas?
-
+...
 
 
