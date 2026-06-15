@@ -31,10 +31,10 @@ Vamos a realizar un analisis de cada una de las estructuras propuestas por la ca
    
 ## Analisis de las Propuestas 
 
-### Propuesta 1: δ como Lista de Transiciones
+### <ins>Propuesta 1</ins>: δ como Lista de Transiciones
 
 #### ¿Cual es la idea de la estructura?
-Esta estructura propone que las transiciones del automata tenga su propia lista enlazada. Es decir, representa a la funcion de transicion **δ** como una cadena secuencial de reglas, en donde agarra cada transicion (si fuera un grafico, seria cada arista) y la guarda de manera individual en un nodo que contiene un campo que almacena  el dato de la transicion, y  otro que almacena el puntero next que dirige hacia el siguiente nodo. 
+Esta estructura propone que las transiciones del automata tenga su propia lista enlazada. Representa a la funcion de transicion **δ** como una cadena secuencial de reglas, en donde agarra cada transicion (si fuera un grafico, seria cada arista) y la guarda de manera individual en un nodo que contiene un campo que almacena  el dato de la transicion, y  otro que almacena el puntero next que dirige hacia el siguiente nodo. 
 
 ##### Estado y simbolo
 ```C
@@ -44,32 +44,32 @@ typedef str Symbol;
 ##### Transicion
 ```C
 typedef struct{
-    State from;
-    Symbol symbol;
+    State from;      //Estado origen
+    Symbol symbol;   //Simbolo leido
 
-    Tdata to; // SET de estados destino
+    Tdata to;        //SET de estados destino
 } Transition;
 ```
 ##### Nodo de Transicion
 ```C
 typedef struct transitionNode{
-    Transition t;
-    struct transitionNode* next;
+    Transition t;                   
+    struct transitionNode* next;    //Puntero al siguiente nodo de Transicion
 } TransitionNode;
 ```
 ##### Automata
 ```C
 typedef struct{
-    Tdata Q;
-    Tdata Sigma;
+    Tdata Q;                    //SET con los estados
+    Tdata Sigma;                //SET con el alfabeto
 
-    TransitionNode* Delta;
+    TransitionNode* Delta;      //Puntero inicial a la lista de transiciones
 
-    State q0;
+    State q0;                   
 
-    Tdata F;
+    Tdata F;                    //SET con los estados finales
 
-    int deterministic;
+    int deterministic;          //Bandera 1 o 0 (Determinista o No Determinista)
 } Automata;
 ```
 #### ¿Como funciona delta?
@@ -97,13 +97,21 @@ symbol == a
 Es decir, la funcion **δ** va a actuar como un buscador secuencial. 
 
 #### ¿Cuales son las ventajas de utilizar esta estructura?
-
+* Solo consume memoria por cada transicion que realmente existe. Si un estado no tiene transiciones, no ocupa espacio extra.
+* Permite agregar una nueva transicion de manera rapida: se crea un nodo nuevo y se lo engancha al principio de la lista.
+* Es facil de debuggear.
+* Permite la facil transicion entre AFD y AFND.
 
 #### ¿Y las desventajas?
+* Tiene un rendimiento de busqueda muy pobre. Al funcionar como un "buscador secuencial", el tiempo que tarda en procesar un simbolo crece a medidad que el automata tiene mas transiciones. Para saber que una transicion no existe, hay que recorrer toda la lista hasta el final.
+* Se vuelve a diseñar una lista, cuando en el TAD_AST ya se tiene una lista (LIST) generica, dinamica y a prueba de fugas de memoria.
+
+#### Conlusion
+
+Aunque la Propuesta 1 es facil de implementar, su lentitud al ejecutar cadenas largas y el peligro con la memoria la hacen una opcion inefieciente. 
 
 
-
-### Propuesta 2: δ Indexado por Estado
+### <ins>Propuesta 2</ins>: δ Indexado por Estado
 
 #### ¿Cual es la idea de la estructura?
 Esta estructura representa al automata conmo un grafo que utiliza una lista de adyacencia. Trata de descentralizar la informacion y darsela a cada estado. Es decir, que en lugar de que el automata tenga una funcion **δ** gigante y centralizada, la funcion de transicion sera fragmentada y metida adentro de cada estado. Los estados pasan a guardar todas las flechas (aristas del grafo) que salen de el (en este caso, hacia donde deben ir), su nombre y su tipo (si es final o no). 
@@ -160,7 +168,7 @@ Sea el estado actual **"q0"** y el simbolo *b*:
 #### ¿Y las desventajas?
 
 
-### Propuesta 3: δ como Matriz Dispersa
+### <ins>Propuesta 3</ins>: δ como Matriz Dispersa
 
 #### ¿Cual es la idea de la estructura?
 En la teoria, a un automata se lo puede simular como una tabla de transiciones en donde se tienen filas (estados) y columnas (simbolos). Por ejemplo, si cruzo a la fila **"q0"** con la columna *a*, la celda resultante te dice hacia donde se debe ir (estado destino). Pero, ¿que pasa si el automata tiene muchos estados y un alfabeto grande, y encima hay pocas transiciones entre los estados? En este caso, pasariamos a tener una matriz gigante llena de espacios vacios. Pera evitar eso, esta estructura propone guardar solo las celdas que tienen datos, usando "coordenadas numericas enteras en lugar de nombres *strings*. 
@@ -215,7 +223,7 @@ Delta(A, estado, simbolo);
 #### ¿Y las desventajas?
 ...
 
-### Propuesta 4: δ Funcional
+### <ins>Propuesta 4</ins>: δ Funcional
 
 /*Se va a utilizar esta estructura, es la que mejor se adapta al codigo que se tiene*/
 /*
@@ -263,7 +271,7 @@ buscar (estado, simbolo)
 ...
 
 
-### Propuesta 5: Estados Compuestos para Determinacion
+### <ins>Propuesta 5</ins>: Estados Compuestos para Determinacion
 
 #### ¿Cual es la idea de la estructura?
 
