@@ -104,7 +104,7 @@ Es decir, la funcion **δ** va a actuar como un buscador secuencial.
 
 #### ¿Y las desventajas?
 * Tiene un rendimiento de busqueda muy pobre. Al funcionar como un "buscador secuencial", el tiempo que tarda en procesar un simbolo crece a medidad que el automata tiene mas transiciones. Para saber que una transicion no existe, hay que recorrer toda la lista hasta el final.
-* Se vuelve a diseñar una lista, cuando en el TAD_AST ya se tiene una lista (LIST) generica, dinamica y a prueba de fugas de memoria.
+* Se vuelve a definir e implementar una lista, cuando en el TAD_AST ya se tiene una lista (LIST) generica, dinamica y a prueba de fugas de memoria.
 
 #### Conlusion
 
@@ -147,7 +147,7 @@ typedef struct{
 
     State q0;                     //Estado inicial
 
-    int deterministic;            //De que tipo es AFND o AFD (0 o 1)
+    int deterministic;            //Bandera 1 o 0 (Determinista o No Determinista)
 } Automata;
 ```
 
@@ -161,12 +161,18 @@ Sea el estado actual **"q0"** y el simbolo *b*:
 2. Acceder directamente a su lista de transiciones: una vez parado en **"q0"**, debemos acceder a su lista interna y recorrerla hasta encontrar el nodo cuyo ***symbol*** sea *b*.
 3. Obtener conjunto destino: devolvemos el destino *to*. 
 
-
 #### ¿Cuales son las ventajas de utilizar esta estructura?
-
+* Visualmente se ve de manera mas "familiar". Se observa como los dibujos de los automatas en papel (grafos donde de un circulo salen aristas que pueden o no conectar con otros circulos).
+* Su rendimiento de buqueda es un poco mas eficiente. Una vez que se esta posicionado es un estado, solo se debe buscar entre sus pocas transiciones locales.
+* Soporta AFND. 
 
 #### ¿Y las desventajas?
+* Se destruye la definicion de Automata Finito, pues se fusiona el conjunto **Q**, el conjunto **F** y la funcion **δ** en una sola estructura.
+* Se vuelve a definir e implementar dos lista, cuando en el TAD_AST ya se tiene una lista (LIST) generica, dinamica y a prueba de fugas de memoria.
+* Al ser un grafo dirigid, si hay que clonar el automata, se corre el riesgo de caer en bucles infinitos. Por lo que escribir ciertas funciones como la de destruccion y de copia profunda para este modelo, requiere del uso de algoritmos un poco mas avanzados que me permitan el marcado de nodos visitados, entre otros. Esto aumentaria la dificultad del codigo que ya se posee.
 
+#### Conclusion
+La Propuesta 2 seria excelente para la materia "Algoritmo y Estructura de Datos", pero no para el modelado de un Automata Finito, pues rompe las reglas matematicas que lo definen. Y por otro lado, requiere otro nivel de codigo por lo que armarlo va a costar tiempo y lagrimas. 
 
 ### <ins>Propuesta 3</ins>: δ como Matriz Dispersa
 
