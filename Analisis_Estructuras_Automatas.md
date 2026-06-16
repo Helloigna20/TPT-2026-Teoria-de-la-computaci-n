@@ -169,7 +169,7 @@ Sea el estado actual **"q0"** y el simbolo *b*:
 #### ¿Y las desventajas?
 * Se destruye la definicion de Automata Finito, pues se fusiona el conjunto **Q**, el conjunto **F** y la funcion **δ** en una sola estructura.
 * Se vuelve a definir e implementar dos lista, cuando en el TAD_AST ya se tiene una lista (LIST) generica, dinamica y a prueba de fugas de memoria.
-* Al ser un grafo dirigid, si hay que clonar el automata, se corre el riesgo de caer en bucles infinitos. Por lo que escribir ciertas funciones como la de destruccion y de copia profunda para este modelo, requiere del uso de algoritmos un poco mas avanzados que me permitan el marcado de nodos visitados, entre otros. Esto aumentaria la dificultad del codigo que ya se posee.
+* Al ser un grafo dirigido, si hay que clonar el automata, se corre el riesgo de caer en bucles infinitos. Por lo que escribir ciertas funciones como la de destruccion y de copia profunda para este modelo, requiere del uso de algoritmos un poco mas avanzados que me permitan el marcado de nodos visitados, entre otros. Esto aumentaria la dificultad del codigo que ya se posee.
 
 #### Conclusion
 La Propuesta 2 seria excelente para la materia "Algoritmo y Estructura de Datos", pero no para el modelado de un Automata Finito, pues rompe las reglas matematicas que lo definen. Y por otro lado, requiere otro nivel de codigo por lo que armarlo va a costar tiempo y lagrimas. 
@@ -177,7 +177,7 @@ La Propuesta 2 seria excelente para la materia "Algoritmo y Estructura de Datos"
 ### <ins>Propuesta 3</ins>: δ como Matriz Dispersa
 
 #### ¿Cual es la idea de la estructura?
-En la teoria, a un automata se lo puede simular como una tabla de transiciones en donde se tienen filas (estados) y columnas (simbolos). Por ejemplo, si cruzo a la fila **"q0"** con la columna *a*, la celda resultante te dice hacia donde se debe ir (estado destino). Pero, ¿que pasa si el automata tiene muchos estados y un alfabeto grande, y encima hay pocas transiciones entre los estados? En este caso, pasariamos a tener una matriz gigante llena de espacios vacios. Pera evitar eso, esta estructura propone guardar solo las celdas que tienen datos, usando "coordenadas numericas enteras en lugar de nombres *strings*. 
+En la teoria, a un automata se lo puede simular como una tabla de transiciones en donde se tienen filas (estados) y columnas (simbolos). Por ejemplo, si cruzo a la fila **"q0"** con la columna *a*, la celda resultante te dice hacia donde se debe ir (estado destino). Pero, ¿que pasa si el automata tiene muchos estados y un alfabeto grande, y encima hay pocas transiciones entre los estados? En este caso, pasariamos a tener una matriz gigante llena de espacios vacios. Pera evitar eso, esta estructura propone guardar solo las celdas que tienen datos, usando "coordenadas" numericas enteras en lugar de nombres *strings*. 
 
 La idea de esta propuesta es que a cada estado y a cada simbolo se le asigne un id entero (indice), creando asi un sistema de coordenadas. Para eso se propone ademas usar un puntero simple: **TransitionEntry * delta**, es decir, un arreglo dinamico que va a contener las coordenas de las transiciones que si existen. 
 
@@ -224,15 +224,19 @@ Delta(A, estado, simbolo);
 
 
 #### ¿Cuales son las ventajas de utilizar esta estructura?
-...
-
+* Se ahorra memoria, pues a diferencia de una matriz cuadrada tradicional, en esta matriz solo se guardan las coordenadas que existen.
+* Soporta AFND.
+* Respeta la definicion maematica de Automata Finito.
+  
 #### ¿Y las desventajas?
-...
+* Se debe convertir los estados y simbolos de STR a ***int*** para poder armar las coordenadas y cargar la Matriz Dispersa. Eso significa que debemos armar un buscardor que realice esa traduccion cada vez que se quiera procesar una letra. 
+
+#### Conclusion
+La Propuesta 3 es una idea matematica muy solida, pero la traduccion de cadenas a numeros enteros en tiempo de ejecucion agrega dificultad al codigo. Por lo que aunque la propuesta es eficiente, agrega complejidad al codigo que se posee. 
 
 ### <ins>Propuesta 4</ins>: δ Funcional
 
 /*Se va a utilizar esta estructura, es la que mejor se adapta al codigo que se tiene*/
-/*
 
 #### ¿Cual es la idea de la estructura?
 Esta estructura representa a la funcion de transicion δ utilizando un "diccionario" implementado como una arreglo dinamico. 
