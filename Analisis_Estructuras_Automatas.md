@@ -268,18 +268,30 @@ typedef struct{
 } Automata;
 ```
 #### ¿Como funciona delta?
+Cuando el automata esta procesando una palabra lee letra por letra. Por cada letra invoca a la funcion **buscar**.
 
 ##### La funcion δ:
 ```C
 buscar (estado, simbolo)
 ```
-
+La funcion *buscar* hace lo siguiente:
+1. Recibe los datos: toma el estados actual y la letra que acaba de leer.
+2. Abre el "diccionario": empieza a recorrer el arreglo **delta** desde la posicion 0 hasta la ultima posicion.
+3. Compara: para cada posicion del arreglo se pregunta si en esa posicion esta el estado y simbolo actual.
+4. Responde:
+   - Si la respuesta es verdadera, extrae el conjunto de destinos y lo devuelve para que el automata viaje hacia alla.
+   - Si llego al final del arreglo y no encontro nada, entonces devuelve *NULL*. Esto significa que el automata cayo por un "pozo" o rechazo la palabra. 
 
 #### ¿Cuales son las ventajas de utilizar esta estructura?
+* Representa de manera fiel la definicion de automata.
+* Aprovecha las operaciones definidas e implementadas en el TAD_AST.
+* Garantiza que las transiciones ocupen memoria de manera contigua, lo que facilita su iteracion y liberacion.
 
 #### ¿Y las desventajas?
-...
-
+* Utiliza busqueda secuencial.
+  
+#### Conclusion
+La Propuesta 4 al tratar a los estados y simbolos como **Tdata** de principio a fin permite utilizar la estrcuctra del TAD_AST de manera completa sin inventar nuevas estructuras ni arriesgar a que existan fugas de memoria. 
 
 ### <ins>Propuesta 5</ins>: Estados Compuestos para Determinacion
 
