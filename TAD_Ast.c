@@ -49,6 +49,11 @@ Tdata create_str(){
 void carge_str_cad(Tdata* nodo, const char* texto){
 	(*nodo)->strData= load2(texto);
 }
+
+Tdata carge_str_consola(){
+	str cadena_leida= cadena_cargar_consola();
+	return create_str_lis(cadena_leida);
+}
 	
 	
 int compare_str(Tdata nodo1, Tdata nodo2){
@@ -72,9 +77,14 @@ Tdata concat_str(Tdata nodo1, Tdata nodo2){
 			return NULL;
 		}
 		
-		str nueva_cadena= cadena_concatenar(nodo1->strData, nodo2->strData);
+		Tdata nuevo_nodo_ast= clone(nodo1);
 		
-		Tdata nuevo_nodo_ast= create_str_lis(nueva_cadena);
+		if(nuevo_nodo_ast==NULL){
+			return NULL;
+		}
+		else{
+			nuevo_nodo_ast->strData= cadena_concatenar(nuevo_nodo_ast->strData, nodo2->strData);
+		}
 		
 		return nuevo_nodo_ast;
 	}
@@ -104,12 +114,11 @@ Tdata create_set(){
 	
 void insert_set(Tdata* set, Tdata elem){
 	if(elem!=NULL){
-		
 		Tdata nuevo= create_set();
 		nuevo->data= clone(elem);
 		
-		if(*set == NULL){
-			*set=nuevo;
+		if(*set==NULL || (*set)->data==NULL){
+			*set= nuevo;
 		}
 		else{
 			if(belongs(*set, elem)==0){
@@ -118,7 +127,11 @@ void insert_set(Tdata* set, Tdata elem){
 				while(aux->next!=NULL){
 					aux= aux->next;
 				}
+				Tdata nuevo = create_set();
+				nuevo->data = clone(elem);
 				aux->next= nuevo;
+				
+				
 			}
 			
 		}
@@ -202,8 +215,7 @@ void remove_set(Tdata* set, Tdata elem){
 		printf("\n*** Elemento eliminado con exito ***\n");
 		
 	}else{
-		printf("\n*** Elemento no encontrado *** 
-			   \n");
+		printf("\n*** Elemento no encontrado *** \n");
 	}
 }
 	
@@ -324,9 +336,31 @@ Tdata copy_set(Tdata set){
 
 
 Tdata product_cartesiano(Tdata set1, Tdata set2){
+	Tdata producto= NULL;
 	
+	if(set1!=NULL && set2!=NULL){
+		if(set1->nodeType == SET && set2->nodeType == SET){
+			Tdata aux1= set1;
+			
+			while(aux1 != NULL){
+				Tdata aux2= set2;
+				
+				while(aux2 != NULL){
+					if(aux1->data != NULL && aux2->data != NULL){
+						Tdata par= create_list();
+						append(&par, aux1->data);
+						append(&par, aux2->data);
+						insert_set(&producto, par);
+					}
+					aux2= aux2->next;
+				}
+				aux1= aux1->next;
+			}
+		}
+	}
+	
+	return producto;
 }
-
 
 
 // <<-- Sobre TD LIST -->> //
@@ -345,7 +379,7 @@ void append(Tdata* list, Tdata elem){
 		Tdata nuevo= create_list();
 		nuevo->data= clone(elem);
 		
-		if(*list==NULL){
+		if(*list==NULL || (*list)->data==NULL){
 			*list=nuevo;
 		}
 		else{
@@ -399,12 +433,60 @@ Tdata copy_list(Tdata list){
 	
 Tdata concat(Tdata list1, Tdata list2){
 	
+	if(list1==NULL && list2==NULL){
+		return NULL;
+	}
+	else{
+		if(list1==NULL){
+			return clone(list2);
+		}
+		if(list2==NULL){
+			return clone(list1);
+		}
+	}
+	
+	Tdata nuevo= clone(list1);
+	Tdata copy_list2= list2;
+	
+	Tdata aux= nuevo;
+	
+	while(aux->next!=NULL){
+		aux= aux->next;
+	}
+	
+	aux->next= copy_list2;
+	
+	return nuevo;
 	
 }
 
 int compare_list(Tdata list1, Tdata list2){
-	
+	if(list1==NULL && list2==NULL){
+		return 0;
+	}
+	if(list1==NULL || list2==NULL){
+		return 1;
+	}
+	else{
+		Tdata aux1= list1;
+		Tdata aux2= list2;
+		
+		while(aux1!=NULL && aux2!=NULL){
+			if(compara_generico(aux1->data, aux2->data)!=0){
+				return 1;
+			}
+			aux1=aux1->next;
+			aux2=aux2->next;
+		}
+		
+		if(aux1==NULL && aux2==NULL){
+			return 0;
+		}
+		
+		return 1;
+	}
 }
+
 	
 int search(Tdata list, Tdata elem){
 	while(list!=NULL){
@@ -441,6 +523,46 @@ void print_list(Tdata list){
 	}
 	
 	printf(" ]");
+}
+	
+	
+Tdata convertir_list_str(Tdata nodo){
+	
+	if (nodo == NULL) {
+		return NULL;
+	}
+	else{
+		if(nodo->nodeType == STR){
+			return clone(nodo);
+		}
+		
+		Tdata nuevo = NULL; 
+		Tdata aux = nodo;
+		
+		if(nodo->nodeType==LIST || nodo->nodeType==SET){
+			
+			while (aux != NULL) {
+				if (aux->data != NULL) {
+					Tdata nvo_aux= convertir_list_str(aux->data);
+					
+					if(nvo_aux!=NULL){
+						if (nuevo== NULL){
+							nuevo = nvo_aux; 
+						}
+						else {
+							Tdata temporal = concat_str(nuevo, nvo_aux);
+							
+							eliminar_generico(&nuevo);
+							eliminar_generico(&nvo_aux);
+							nuevo = temporal;
+						}
+					}
+				}
+				aux = aux->next;
+			}
+		}
+		return nuevo;
+	}
 }
 	
 
@@ -506,12 +628,6 @@ int compara_generico(Tdata nodo1, Tdata nodo2){
 	}
 }
 	
-// este es solo cuando ya cargaste elementos en un conjunto o lista
-// poke antes de eso no sabe de que tipo es lo que va a mostrar
-// habria que ver otra forma de insertar_set para que en el main podamos hacer mostrar_genrico(A);
-// poke si A= NULL y llamamos a mostrar_generico(A), no muestra nada.
-// nos dimos cuenta tarde asi que lo dejamos asi nomas...
-	
 
 void mostrar_generico(Tdata nodo){
 	if(nodo==NULL){
@@ -552,7 +668,5 @@ void eliminar_generico(Tdata* nodo){
 		break;
 	}
 	*nodo= NULL;
-	
 }
-
 

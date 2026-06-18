@@ -53,6 +53,19 @@ str load2(const char* texto){
 	return cad;
 }
 	
+	
+str cadena_cargar_consola(){
+	str cad= cadena_crear();
+	char c= getchar();
+	
+	while(c!=EOF&& c!='\n'){
+		cadena_agregar_caracter(&cad, c);
+		c= getchar();
+	}
+	return cad;
+}
+
+	
 void cadena_eliminar_vocales(str* cad){
 	str aux, ant;
 	

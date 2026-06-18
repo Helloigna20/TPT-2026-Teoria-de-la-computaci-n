@@ -20,7 +20,6 @@ typedef struct dataType{
 typedef dataType * Tdata;
 
 /* << Operaciones generales >>*/
-Tdata create_list();
 int compara_generico(Tdata, Tdata);
 Tdata clone(Tdata);
 void mostrar_generico(Tdata);
@@ -29,8 +28,10 @@ void eliminar_generico(Tdata*);
 
 /* << Operaciones sobre STR >> */
 Tdata create_str_cad(const char*);
+Tdata create_str_lis(str);
 Tdata create_str();
 void carge_str_cad(Tdata*, const char*);
+Tdata carge_str_consola();
 int compare_str(Tdata, Tdata);
 Tdata concat_str(Tdata, Tdata);
 void print_str(Tdata);
@@ -52,12 +53,15 @@ int subset(Tdata, Tdata);
 int equals_set(Tdata, Tdata);
 
 /* << Operaciones sobre LIST >> */
+Tdata create_list();
 void append(Tdata*, Tdata);
 int length(Tdata);
 Tdata copy_list(Tdata);
 Tdata concat(Tdata, Tdata);
 int search(Tdata, Tdata);
 void print_list(Tdata);
+Tdata convertir_list_str(Tdata);
+	
 
 
 #endif
